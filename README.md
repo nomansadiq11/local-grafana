@@ -1,2 +1,3 @@
 # local-grafana
-running grafana locally for some usecases 
+
+running grafana locally for some usecases

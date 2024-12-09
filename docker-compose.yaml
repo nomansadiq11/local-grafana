@@ -12,6 +12,6 @@ services:
     environment:
       - TERM=linux
     volumes:
-      - grafana_data:/var/lib/grafana
-      - dashboards:/etc/grafana/provisioning/dashboards
-      - database:/tmp/database
+      - ./grafana_data:/var/lib/grafana
+      - ./dashboards:/etc/grafana/provisioning/dashboards
+      - ./database:/tmp/database
