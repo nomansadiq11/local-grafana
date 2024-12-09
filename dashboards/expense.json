@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
-        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae0highu4tipsb"
+        "uid": "ae6eixkpivhfkf"
       },
       "fieldConfig": {
         "defaults": {
@@ -52,6 +52,7 @@
               "mode": "off"
             }
           },
+          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -66,30 +67,34 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 24,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
-        "barRadius": 0,
+        "barRadius": 0.1,
         "barWidth": 0.97,
+        "colorByField": "total_amount",
         "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "right",
+          "calcs": [
+            "sum",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
           "showLegend": true
         },
         "orientation": "auto",
-        "showValue": "never",
+        "showValue": "always",
         "stacking": "none",
         "tooltip": {
           "mode": "single",
@@ -98,16 +103,16 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     month\nORDER BY \n    month, category;\n",
+          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
           "queryType": "table",
-          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     month\nORDER BY \n    month, category;\n",
+          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -135,9 +140,8 @@
     },
     {
       "datasource": {
-        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae0highu4tipsb"
+        "uid": "ae6eixkpivhfkf"
       },
       "fieldConfig": {
         "defaults": {
@@ -188,18 +192,21 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 11
       },
       "id": 2,
       "options": {
-        "barRadius": 0,
+        "barRadius": 0.1,
         "barWidth": 0.97,
         "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "right",
+          "calcs": [
+            "sum",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
           "showLegend": true
         },
         "orientation": "auto",
@@ -212,7 +219,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -249,9 +256,8 @@
     },
     {
       "datasource": {
-        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae0highu4tipsb"
+        "uid": "ae6eixkpivhfkf"
       },
       "fieldConfig": {
         "defaults": {
@@ -298,7 +304,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 19
       },
       "id": 3,
       "options": {
@@ -307,9 +313,12 @@
         "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "right",
+          "calcs": [
+            "sum",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
           "showLegend": true
         },
         "orientation": "auto",
@@ -322,16 +331,16 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "queryType": "table",
-          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -358,20 +367,19 @@
       "type": "barchart"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "2024-01-01",
           "value": "2024-01-01"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "From Date",
-        "multi": false,
         "name": "from",
         "options": [
           {
@@ -381,20 +389,15 @@
           }
         ],
         "query": "2024-01-01",
-        "queryValue": "2024-",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
           "text": "2024-12-30",
           "value": "2024-12-30"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "To Date",
-        "multi": false,
         "name": "to",
         "options": [
           {
@@ -404,46 +407,36 @@
           }
         ],
         "query": "2024-12-30",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
-          "text": "Home-Dubai",
-          "value": "Home-Dubai"
+          "text": "Noman",
+          "value": "Noman"
         },
         "definition": "SELECT distinct category FROM expense_report ",
-        "hide": 0,
         "includeAll": false,
         "label": "category",
-        "multi": false,
         "name": "category",
         "options": [],
         "query": "SELECT distinct category FROM expense_report ",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
-          "text": "Grocery",
-          "value": "Grocery"
+          "text": "Shopping",
+          "value": "Shopping"
         },
         "definition": "SELECT distinct subcategory FROM expense_report where category = '$category'",
-        "hide": 0,
         "includeAll": false,
-        "multi": false,
         "name": "subcategory",
         "options": [],
         "query": "SELECT distinct subcategory FROM expense_report where category = '$category'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -456,6 +449,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Expense Reporter",
-  "version": 0,
+  "uid": "de6eipn53d4owe",
+  "version": 5,
   "weekStart": ""
 }
