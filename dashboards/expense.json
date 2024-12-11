@@ -110,9 +110,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
+          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
           "queryType": "table",
-          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
+          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS monthly\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     monthly\nORDER BY \n    monthly, category;\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -226,9 +226,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "queryType": "table",
-          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -338,9 +338,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "queryType": "table",
-          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = 'Budget' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
+          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    strftime('%Y-%m', expensed_date) AS month\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and subcategory = '$subcategory' and category = '$category'\nGROUP BY \n      month\nORDER BY \n    month\n",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -375,6 +375,20 @@
     "list": [
       {
         "current": {
+          "text": "Budget",
+          "value": "Budget"
+        },
+        "definition": "select distinct account from expense_report ",
+        "label": "Account",
+        "name": "account",
+        "options": [],
+        "query": "select distinct account from expense_report ",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
           "text": "2024-01-01",
           "value": "2024-01-01"
         },
@@ -383,36 +397,46 @@
         "name": "from",
         "options": [
           {
+            "selected": false,
+            "text": "2023-01-01",
+            "value": "2023-01-01"
+          },
+          {
             "selected": true,
             "text": "2024-01-01",
             "value": "2024-01-01"
           }
         ],
-        "query": "2024-01-01",
+        "query": "2023-01-01,2024-01-01",
         "type": "custom"
       },
       {
         "current": {
-          "text": "2024-12-30",
-          "value": "2024-12-30"
+          "text": "2024-12-31",
+          "value": "2024-12-31"
         },
         "includeAll": false,
         "label": "To Date",
         "name": "to",
         "options": [
           {
+            "selected": false,
+            "text": "2023-12-31",
+            "value": "2023-12-31"
+          },
+          {
             "selected": true,
-            "text": "2024-12-30",
-            "value": "2024-12-30"
+            "text": "2024-12-31",
+            "value": "2024-12-31"
           }
         ],
-        "query": "2024-12-30",
+        "query": "2023-12-31,2024-12-31",
         "type": "custom"
       },
       {
         "current": {
-          "text": "Noman",
-          "value": "Noman"
+          "text": "Home-Dubai",
+          "value": "Home-Dubai"
         },
         "definition": "SELECT distinct category FROM expense_report ",
         "includeAll": false,
@@ -427,8 +451,8 @@
       },
       {
         "current": {
-          "text": "Shopping",
-          "value": "Shopping"
+          "text": "Grocery",
+          "value": "Grocery"
         },
         "definition": "SELECT distinct subcategory FROM expense_report where category = '$category'",
         "includeAll": false,
@@ -450,6 +474,6 @@
   "timezone": "browser",
   "title": "Expense Reporter",
   "uid": "de6eipn53d4owe",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }
