@@ -23,8 +23,151 @@
   "panels": [
     {
       "datasource": {
+        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae6eixkpivhfkf"
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70000
+              },
+              {
+                "color": "red",
+                "value": 90000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT \n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Panel Title",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70000
+              },
+              {
+                "color": "red",
+                "value": 90000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT  \n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'",
+          "queryType": "table",
+          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Panel Title",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
       },
       "fieldConfig": {
         "defaults": {
@@ -75,7 +218,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -85,13 +228,10 @@
         "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
-          "calcs": [
-            "sum",
-            "mean"
-          ],
+          "calcs": [],
           "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
+          "placement": "right",
+          "showLegend": false
         },
         "orientation": "auto",
         "showValue": "always",
@@ -140,8 +280,9 @@
     },
     {
       "datasource": {
+        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae6eixkpivhfkf"
+        "uid": "eegt2oll384jkd"
       },
       "fieldConfig": {
         "defaults": {
@@ -192,7 +333,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 19
       },
       "id": 4,
       "options": {
@@ -208,7 +349,7 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "orientation": "auto",
         "showValue": "always",
@@ -227,9 +368,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    category\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     category\nORDER BY \n     total_amount desc;\n",
+          "queryText": "SELECT \n    SUM(amount) AS total_amount, \n    category\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     category\nORDER BY \n     total_amount desc;\n     ",
           "queryType": "table",
-          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    category\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     category\nORDER BY \n     total_amount desc;\n",
+          "rawQueryText": "SELECT \n    SUM(amount) AS total_amount, \n    category\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n     category\nORDER BY \n     total_amount desc;\n     ",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -257,8 +398,9 @@
     },
     {
       "datasource": {
+        "default": true,
         "type": "frser-sqlite-datasource",
-        "uid": "ae6eixkpivhfkf"
+        "uid": "eegt2oll384jkd"
       },
       "fieldConfig": {
         "defaults": {
@@ -309,7 +451,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 30
       },
       "id": 2,
       "options": {
@@ -324,7 +466,7 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "orientation": "auto",
         "showValue": "always",
@@ -372,10 +514,7 @@
       "type": "barchart"
     },
     {
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "ae6eixkpivhfkf"
-      },
+      "datasource": {},
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -421,7 +560,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 40
       },
       "id": 3,
       "options": {
@@ -436,7 +575,7 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true,
+          "showLegend": false,
           "sortBy": "Mean",
           "sortDesc": true
         },
@@ -486,10 +625,7 @@
       "type": "barchart"
     },
     {
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "ae6eixkpivhfkf"
-      },
+      "datasource": {},
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -535,7 +671,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 51
       },
       "id": 5,
       "options": {
@@ -550,7 +686,7 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true,
+          "showLegend": false,
           "sortBy": "Mean",
           "sortDesc": true
         },
@@ -571,9 +707,9 @@
             "type": "frser-sqlite-datasource",
             "uid": "ae0highu4tipsb"
           },
-          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    subcategory\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      subcategory\nORDER BY \n    total_amount desc\n",
+          "queryText": "SELECT  \n    SUM(amount) AS total_amount, \n    subcategory\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      subcategory\nORDER BY \n    total_amount desc",
           "queryType": "table",
-          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    subcategory\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      subcategory\nORDER BY \n    total_amount desc\n",
+          "rawQueryText": "SELECT  \n    SUM(amount) AS total_amount, \n    subcategory\nFROM \n    expense_report \nWHERE \n    account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n    and category = '$category'\nGROUP BY \n      subcategory\nORDER BY \n    total_amount desc",
           "refId": "A",
           "timeColumns": [
             "time",
@@ -600,33 +736,45 @@
       "type": "barchart"
     }
   ],
-  "preload": false,
   "refresh": "",
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
+          "selected": false,
           "text": "Budget",
           "value": "Budget"
         },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
+        },
         "definition": "select distinct account from expense_report ",
+        "hide": 0,
+        "includeAll": false,
         "label": "Account",
+        "multi": false,
         "name": "account",
         "options": [],
         "query": "select distinct account from expense_report ",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "text": "2024-01-01",
-          "value": "2024-01-01"
+          "selected": true,
+          "text": "> 2025-01-01",
+          "value": "2025-01-01"
         },
+        "hide": 0,
         "includeAll": false,
         "label": "From Date",
+        "multi": false,
         "name": "from",
         "options": [
           {
@@ -635,21 +783,26 @@
             "value": "2023-01-01"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "2024-01-01",
             "value": "2024-01-01"
           }
         ],
         "query": "2023-01-01,2024-01-01",
+        "queryValue": "2025-01-01",
+        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "text": "2024-12-31",
-          "value": "2024-12-31"
+          "selected": true,
+          "text": "> 2025-07-07",
+          "value": "2025-07-07"
         },
+        "hide": 0,
         "includeAll": false,
         "label": "To Date",
+        "multi": false,
         "name": "to",
         "options": [
           {
@@ -658,42 +811,60 @@
             "value": "2023-12-31"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "2024-12-31",
             "value": "2024-12-31"
           }
         ],
         "query": "2023-12-31,2024-12-31",
+        "queryValue": "2025-07-07",
+        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "text": "Noman",
-          "value": "Noman"
+          "selected": true,
+          "text": "Entertainment",
+          "value": "Entertainment"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
         },
         "definition": "SELECT distinct category FROM expense_report ",
+        "hide": 0,
         "includeAll": false,
         "label": "category",
+        "multi": false,
         "name": "category",
         "options": [],
         "query": "SELECT distinct category FROM expense_report ",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "text": "Amazon prime",
-          "value": "Amazon prime"
+          "selected": true,
+          "text": "Breakfast",
+          "value": "Breakfast"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
         },
         "definition": "SELECT distinct subcategory FROM expense_report where category = '$category'",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "subcategory",
         "options": [],
         "query": "SELECT distinct subcategory FROM expense_report where category = '$category'",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -707,6 +878,6 @@
   "timezone": "browser",
   "title": "Expense Reporter",
   "uid": "de6eipn53d4owe",
-  "version": 7,
+  "version": 1,
   "weekStart": ""
 }
