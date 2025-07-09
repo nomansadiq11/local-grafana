@@ -29,6 +29,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -38,15 +41,12 @@
                 "value": null
               },
               {
-                "color": "orange",
-                "value": 70000
-              },
-              {
                 "color": "red",
-                "value": 90000
+                "value": 80
               }
             ]
-          }
+          },
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
@@ -58,9 +58,11 @@
       },
       "id": 6,
       "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -68,9 +70,9 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false,
-        "sizing": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
@@ -89,8 +91,8 @@
           ]
         }
       ],
-      "title": "Panel Title",
-      "type": "gauge"
+      "title": "Total Yearly Expense",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -768,8 +770,8 @@
       {
         "current": {
           "selected": true,
-          "text": "> 2025-01-01",
-          "value": "2025-01-01"
+          "text": "2023-01-01",
+          "value": "2023-01-01"
         },
         "hide": 0,
         "includeAll": false,
@@ -779,25 +781,30 @@
         "options": [
           {
             "selected": false,
-            "text": "2023-01-01",
-            "value": "2023-01-01"
+            "text": "2025-01-01",
+            "value": "2025-01-01"
           },
           {
             "selected": false,
             "text": "2024-01-01",
             "value": "2024-01-01"
+          },
+          {
+            "selected": true,
+            "text": "2023-01-01",
+            "value": "2023-01-01"
           }
         ],
-        "query": "2023-01-01,2024-01-01",
-        "queryValue": "2025-01-01",
+        "query": "2025-01-01,2024-01-01,2023-01-01",
+        "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
           "selected": true,
-          "text": "> 2025-07-07",
-          "value": "2025-07-07"
+          "text": "2025-12-31",
+          "value": "2025-12-31"
         },
         "hide": 0,
         "includeAll": false,
@@ -806,24 +813,29 @@
         "name": "to",
         "options": [
           {
-            "selected": false,
-            "text": "2023-12-31",
-            "value": "2023-12-31"
+            "selected": true,
+            "text": "2025-12-31",
+            "value": "2025-12-31"
           },
           {
             "selected": false,
             "text": "2024-12-31",
             "value": "2024-12-31"
+          },
+          {
+            "selected": false,
+            "text": "2023-12-31",
+            "value": "2023-12-31"
           }
         ],
-        "query": "2023-12-31,2024-12-31",
-        "queryValue": "2025-07-07",
+        "query": "2025-12-31,2024-12-31,2023-12-31",
+        "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Entertainment",
           "value": "Entertainment"
         },
@@ -847,7 +859,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Breakfast",
           "value": "Breakfast"
         },
@@ -878,6 +890,6 @@
   "timezone": "browser",
   "title": "Expense Reporter",
   "uid": "de6eipn53d4owe",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

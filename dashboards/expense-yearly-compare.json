@@ -1,0 +1,386 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 76,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "colorByField": "year",
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "year",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT \n    'Year ' || strftime('%Y', expensed_date) AS year,\n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account'\n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n    year\nORDER BY \n    year;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    'Year ' || strftime('%Y', expensed_date) AS year,\n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account'\n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n    year\nORDER BY \n    year;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Compare Yearly",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 8,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "never",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "month\\year",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT \n    strftime('%m', expensed_date) AS month,\n    strftime('%Y', expensed_date) AS year,\n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account'\n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n    year, month\nORDER BY \n    month, year;\n",
+          "queryType": "table",
+          "rawQueryText": "SELECT \n    strftime('%m', expensed_date) AS month,\n    strftime('%Y', expensed_date) AS year,\n    SUM(amount) AS total_amount\nFROM \n    expense_report \nWHERE \n    account = '$account'\n    AND expensed_date BETWEEN '$from' AND '$to'\nGROUP BY \n    year, month\nORDER BY \n    month, year;\n",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Compare Monthly",
+      "transformations": [
+        {
+          "id": "groupingToMatrix",
+          "options": {
+            "columnField": "year",
+            "rowField": "month",
+            "valueField": "total_amount"
+          }
+        }
+      ],
+      "type": "barchart"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "Budget",
+          "value": "Budget"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
+        },
+        "definition": "select distinct account from expense_report ",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Account",
+        "multi": false,
+        "name": "account",
+        "options": [],
+        "query": "select distinct account from expense_report ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "2023-01-01",
+          "value": "2023-01-01"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "From Date",
+        "multi": false,
+        "name": "from",
+        "options": [
+          {
+            "selected": false,
+            "text": "2025-01-01",
+            "value": "2025-01-01"
+          },
+          {
+            "selected": false,
+            "text": "2024-01-01",
+            "value": "2024-01-01"
+          },
+          {
+            "selected": true,
+            "text": "2023-01-01",
+            "value": "2023-01-01"
+          }
+        ],
+        "query": "2025-01-01,2024-01-01,2023-01-01",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "2025-12-31",
+          "value": "2025-12-31"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "To Date",
+        "multi": false,
+        "name": "to",
+        "options": [
+          {
+            "selected": true,
+            "text": "2025-12-31",
+            "value": "2025-12-31"
+          },
+          {
+            "selected": false,
+            "text": "2024-12-31",
+            "value": "2024-12-31"
+          },
+          {
+            "selected": false,
+            "text": "2023-12-31",
+            "value": "2023-12-31"
+          }
+        ],
+        "query": "2025-12-31,2024-12-31,2023-12-31",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Entertainment",
+          "value": "Entertainment"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
+        },
+        "definition": "SELECT distinct category FROM expense_report ",
+        "hide": 0,
+        "includeAll": false,
+        "label": "category",
+        "multi": false,
+        "name": "category",
+        "options": [],
+        "query": "SELECT distinct category FROM expense_report ",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Breakfast",
+          "value": "Breakfast"
+        },
+        "datasource": {
+          "type": "frser-sqlite-datasource",
+          "uid": "eegt2oll384jkd"
+        },
+        "definition": "SELECT distinct subcategory FROM expense_report where category = '$category'",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "subcategory",
+        "options": [],
+        "query": "SELECT distinct subcategory FROM expense_report where category = '$category'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Expense Reporter Compare Yearly",
+  "uid": "de6eipn53d4y",
+  "version": 1,
+  "weekStart": ""
+}
