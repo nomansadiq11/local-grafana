@@ -38,6 +38,403 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "WITH monthly AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(CASE WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS income,\n    SUM(CASE WHEN lower(category) != 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS expense\n  FROM expense_report\n  WHERE \n  account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nrunning AS (\n  SELECT\n    month_start,\n    income,\n    expense,\n    income - expense AS net,\n    SUM(income - expense) OVER (ORDER BY month_start) AS balance\n  FROM monthly\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  income,\n  expense,\n  net,\n  balance\nFROM running\nORDER BY time;",
+          "queryType": "time series",
+          "rawQueryText": "WITH monthly AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(CASE WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS income,\n    SUM(CASE WHEN lower(category) != 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS expense\n  FROM expense_report\n  WHERE \n  account = '$account' \n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nrunning AS (\n  SELECT\n    month_start,\n    income,\n    expense,\n    income - expense AS net,\n    SUM(income - expense) OVER (ORDER BY month_start) AS balance\n  FROM monthly\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  income,\n  expense,\n  net,\n  balance\nFROM running\nORDER BY time;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Cumulative savings",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT\n  strftime('%Y-%m-01T00:00:00Z', expensed_date) AS time,\n  SUM(CASE WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS income,\n  SUM(CASE WHEN lower(category) != 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS expense\nFROM expense_report\nWHERE \naccount = 'BankAccount'\nGROUP BY 1\nORDER BY 1;",
+          "queryType": "time series",
+          "rawQueryText": "SELECT\n  strftime('%Y-%m-01T00:00:00Z', expensed_date) AS time,\n  SUM(CASE WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS income,\n  SUM(CASE WHEN lower(category) != 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL) ELSE 0 END) AS expense\nFROM expense_report\nWHERE \naccount = 'BankAccount'\nGROUP BY 1\nORDER BY 1;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Income and Expenses",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "SELECT\n  CAST(strftime('%s', date(expensed_date, 'start of month')) AS INTEGER) AS time,\n  SUM(\n    CASE\n      WHEN lower(category) = 'income'\n        THEN abs(CAST(REPLACE(amount, ',', '') AS REAL))\n      ELSE\n        -abs(CAST(REPLACE(amount, ',', '') AS REAL))\n    END\n  ) AS savings\nFROM expense_report\nWHERE \naccount = 'BankAccount'\nGROUP BY 1\nORDER BY 1;",
+          "queryType": "time series",
+          "rawQueryText": "SELECT\n  CAST(strftime('%s', date(expensed_date, 'start of month')) AS INTEGER) AS time,\n  SUM(\n    CASE\n      WHEN lower(category) = 'income'\n        THEN abs(CAST(REPLACE(amount, ',', '') AS REAL))\n      ELSE\n        -abs(CAST(REPLACE(amount, ',', '') AS REAL))\n    END\n  ) AS savings\nFROM expense_report\nWHERE \naccount = 'BankAccount'\nGROUP BY 1\nORDER BY 1;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Account Activities",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "WITH monthly AS (\n  SELECT\n    strftime('%Y-%m-01T00:00:00Z', expensed_date) AS time,\n    SUM(\n      CASE\n        WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL)\n        ELSE -CAST(REPLACE(amount, ',', '') AS REAL)\n      END\n    ) AS monthly_savings\n  FROM expense_report\n  WHERE account = 'BankAccount'\n  GROUP BY 1\n)\nSELECT\n  time,\n  SUM(monthly_savings) OVER (ORDER BY time) AS cumulative_savings\nFROM monthly\nORDER BY time;",
+          "queryType": "time series",
+          "rawQueryText": "WITH monthly AS (\n  SELECT\n    strftime('%Y-%m-01T00:00:00Z', expensed_date) AS time,\n    SUM(\n      CASE\n        WHEN lower(category) = 'income' THEN CAST(REPLACE(amount, ',', '') AS REAL)\n        ELSE -CAST(REPLACE(amount, ',', '') AS REAL)\n      END\n    ) AS monthly_savings\n  FROM expense_report\n  WHERE account = 'BankAccount'\n  GROUP BY 1\n)\nSELECT\n  time,\n  SUM(monthly_savings) OVER (ORDER BY time) AS cumulative_savings\nFROM monthly\nORDER BY time;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Cumulative savings",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
             "fillOpacity": 76,
             "gradientMode": "none",
             "hideFrom": {
@@ -75,7 +472,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 48
       },
       "id": 9,
       "options": {
@@ -174,7 +571,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 56
       },
       "id": 8,
       "options": {
@@ -236,9 +633,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "Budget",
-          "value": "Budget"
+          "selected": true,
+          "text": "BankAccount",
+          "value": "BankAccount"
         },
         "datasource": {
           "type": "frser-sqlite-datasource",
@@ -260,9 +657,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "2023-01-01",
-          "value": "2023-01-01"
+          "selected": true,
+          "text": "2026-01-01",
+          "value": "2026-01-01"
         },
         "hide": 0,
         "includeAll": false,
@@ -270,6 +667,11 @@
         "multi": false,
         "name": "from",
         "options": [
+          {
+            "selected": true,
+            "text": "2026-01-01",
+            "value": "2026-01-01"
+          },
           {
             "selected": false,
             "text": "2025-01-01",
@@ -281,21 +683,21 @@
             "value": "2024-01-01"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "2023-01-01",
             "value": "2023-01-01"
           }
         ],
-        "query": "2025-01-01,2024-01-01,2023-01-01",
+        "query": "2026-01-01,2025-01-01,2024-01-01,2023-01-01",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "2025-12-31",
-          "value": "2025-12-31"
+          "selected": true,
+          "text": "2026-12-31",
+          "value": "2026-12-31"
         },
         "hide": 0,
         "includeAll": false,
@@ -305,6 +707,11 @@
         "options": [
           {
             "selected": true,
+            "text": "2026-12-31",
+            "value": "2026-12-31"
+          },
+          {
+            "selected": false,
             "text": "2025-12-31",
             "value": "2025-12-31"
           },
@@ -319,7 +726,7 @@
             "value": "2023-12-31"
           }
         ],
-        "query": "2025-12-31,2024-12-31,2023-12-31",
+        "query": "2026-12-31,2025-12-31,2024-12-31,2023-12-31",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
@@ -374,13 +781,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Expense Reporter Compare Yearly",
   "uid": "de6eipn53d4y",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
