@@ -135,6 +135,104 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 14,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "time",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "WITH params AS (\n  SELECT 1300000.0 AS total_loan\n),\nbounds AS (\n  SELECT\n    date(MIN(expensed_date), 'start of month') AS min_month,\n    date(MAX(expensed_date), 'start of month') AS max_month\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND expensed_date BETWEEN '$from' AND '$to'\n),\nmonths(month_start) AS (\n  SELECT min_month FROM bounds\n  UNION ALL\n  SELECT date(month_start, '+1 month')\n  FROM months, bounds\n  WHERE month_start < max_month\n),\nmonthly_saving AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(\n      CASE\n        WHEN lower(category) = 'income'\n          THEN abs(CAST(REPLACE(amount, ',', '') AS REAL))\n        ELSE\n          -abs(CAST(REPLACE(amount, ',', '') AS REAL))\n      END\n    ) AS monthly_net_saving\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nmonthly_loan_paid AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(abs(CAST(REPLACE(amount, ',', '') AS REAL))) AS monthly_loan_paid\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND lower(category) = 'investment'\n    AND lower(subcategory) IN ('nbj', 'nbj616')\n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nbase AS (\n  SELECT\n    m.month_start,\n    COALESCE(s.monthly_net_saving, 0) AS monthly_net_saving,\n    COALESCE(l.monthly_loan_paid, 0) AS monthly_loan_paid\n  FROM months m\n  LEFT JOIN monthly_saving s ON s.month_start = m.month_start\n  LEFT JOIN monthly_loan_paid l ON l.month_start = m.month_start\n),\nrunning AS (\n  SELECT\n    month_start,\n    monthly_net_saving,\n    monthly_loan_paid,\n    SUM(monthly_net_saving) OVER (ORDER BY month_start) AS total_saving_till_month,\n    SUM(monthly_loan_paid) OVER (ORDER BY month_start) AS total_paid_loan_till_month\n  FROM base\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  ROUND(monthly_net_saving, 2) AS monthly_net_saving,\n  ROUND(total_saving_till_month, 2) AS total_saving_till_month,\n  ROUND(monthly_loan_paid, 2) AS monthly_loan_paid,\n  ROUND(total_paid_loan_till_month, 2) AS total_paid_loan_till_month,\n  ROUND(MAX((SELECT total_loan FROM params) - total_paid_loan_till_month, 0), 2) AS remaining_loan_till_month\nFROM running\nORDER BY month_start;",
+          "queryType": "time series",
+          "rawQueryText": "WITH params AS (\n  SELECT 1300000.0 AS total_loan\n),\nbounds AS (\n  SELECT\n    date(MIN(expensed_date), 'start of month') AS min_month,\n    date(MAX(expensed_date), 'start of month') AS max_month\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND expensed_date BETWEEN '$from' AND '$to'\n),\nmonths(month_start) AS (\n  SELECT min_month FROM bounds\n  UNION ALL\n  SELECT date(month_start, '+1 month')\n  FROM months, bounds\n  WHERE month_start < max_month\n),\nmonthly_saving AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(\n      CASE\n        WHEN lower(category) = 'income'\n          THEN abs(CAST(REPLACE(amount, ',', '') AS REAL))\n        ELSE\n          -abs(CAST(REPLACE(amount, ',', '') AS REAL))\n      END\n    ) AS monthly_net_saving\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nmonthly_loan_paid AS (\n  SELECT\n    date(expensed_date, 'start of month') AS month_start,\n    SUM(abs(CAST(REPLACE(amount, ',', '') AS REAL))) AS monthly_loan_paid\n  FROM expense_report\n  WHERE account = 'BankAccount'\n    AND lower(category) = 'investment'\n    AND lower(subcategory) IN ('nbj', 'nbj616')\n    AND expensed_date BETWEEN '$from' AND '$to'\n  GROUP BY 1\n),\nbase AS (\n  SELECT\n    m.month_start,\n    COALESCE(s.monthly_net_saving, 0) AS monthly_net_saving,\n    COALESCE(l.monthly_loan_paid, 0) AS monthly_loan_paid\n  FROM months m\n  LEFT JOIN monthly_saving s ON s.month_start = m.month_start\n  LEFT JOIN monthly_loan_paid l ON l.month_start = m.month_start\n),\nrunning AS (\n  SELECT\n    month_start,\n    monthly_net_saving,\n    monthly_loan_paid,\n    SUM(monthly_net_saving) OVER (ORDER BY month_start) AS total_saving_till_month,\n    SUM(monthly_loan_paid) OVER (ORDER BY month_start) AS total_paid_loan_till_month\n  FROM base\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  ROUND(monthly_net_saving, 2) AS monthly_net_saving,\n  ROUND(total_saving_till_month, 2) AS total_saving_till_month,\n  ROUND(monthly_loan_paid, 2) AS monthly_loan_paid,\n  ROUND(total_paid_loan_till_month, 2) AS total_paid_loan_till_month,\n  ROUND(MAX((SELECT total_loan FROM params) - total_paid_loan_till_month, 0), 2) AS remaining_loan_till_month\nFROM running\nORDER BY month_start;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Cumulative savings",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
@@ -183,7 +281,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 24
       },
       "id": 10,
       "options": {
@@ -283,7 +381,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 36
       },
       "id": 11,
       "options": {
@@ -383,7 +481,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 48
       },
       "id": 12,
       "options": {
@@ -472,7 +570,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 60
       },
       "id": 9,
       "options": {
@@ -571,7 +669,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 68
       },
       "id": 8,
       "options": {
@@ -633,7 +731,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "BankAccount",
           "value": "BankAccount"
         },
@@ -695,7 +793,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "2026-12-31",
           "value": "2026-12-31"
         },
@@ -781,13 +879,13 @@
     ]
   },
   "time": {
-    "from": "now-6M",
-    "to": "now"
+    "from": "2022-12-01T00:00:00.000Z",
+    "to": "2026-08-01T00:00:00.000Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Expense Reporter Compare Yearly",
   "uid": "de6eipn53d4y",
-  "version": 3,
+  "version": 5,
   "weekStart": ""
 }
