@@ -165,13 +165,135 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "loan_remaining"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 12,
         "w": 24,
         "x": 0,
         "y": 12
+      },
+      "id": 15,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "eegt2oll384jkd"
+          },
+          "queryText": "WITH params AS (\n  SELECT\n    653517.0  AS start_loan_remaining,     -- remaining on the 1.3M installment\n    207093.98 AS start_savings_pot,        -- current BankAccount savings\n    13315.0   AS monthly_installment,      -- EMI\n    8149.3    AS monthly_parallel_saving,  -- extra saving aside (recent avg pace)\n    85000.0/12 AS monthly_rental_income,   -- apartment rental income\n    16000.0/12 AS monthly_service_charge,  -- apartment service charges\n    36        AS months_to_project,        -- 3-year horizon\n    date(\n      (SELECT MAX(expensed_date) FROM expense_report WHERE account = 'BankAccount'),\n      'start of month'\n    ) AS start_month\n),\nseries(n, month_start) AS (\n  SELECT 0, (SELECT start_month FROM params)\n  UNION ALL\n  SELECT n + 1, date(month_start, '+1 month')\n  FROM series, params\n  WHERE n < params.months_to_project\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  n AS month_no,\n\n  -- Loan payoff track (regular installment only)\n  ROUND(MAX((SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n, 0), 2) AS loan_remaining,\n\n  -- Savings pot growing from parallel saving\n  ROUND((SELECT start_savings_pot FROM params) + (SELECT monthly_parallel_saving FROM params) * n, 2) AS savings_pot,\n\n  -- Rental income net of service charge, cumulative (shows subsidy building up)\n  ROUND((SELECT monthly_rental_income FROM params) * n - (SELECT monthly_service_charge FROM params) * n, 2) AS cumulative_rental_net,\n\n  -- Can you lump-sum payoff the loan using your savings pot at this point?\n  CASE\n    WHEN ((SELECT start_savings_pot FROM params) + (SELECT monthly_parallel_saving FROM params) * n)\n         >= MAX((SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n, 0)\n    THEN 1 ELSE 0\n  END AS ready_to_payoff_lumpsum,\n\n  -- Is loan naturally paid off via regular installment alone?\n  CASE WHEN (SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n <= 0\n    THEN 1 ELSE 0\n  END AS loan_naturally_paid_off\n\nFROM series\nORDER BY month_start;",
+          "queryType": "time series",
+          "rawQueryText": "WITH params AS (\n  SELECT\n    653517.0  AS start_loan_remaining,     -- remaining on the 1.3M installment\n    207093.98 AS start_savings_pot,        -- current BankAccount savings\n    13315.0   AS monthly_installment,      -- EMI\n    8149.3    AS monthly_parallel_saving,  -- extra saving aside (recent avg pace)\n    85000.0/12 AS monthly_rental_income,   -- apartment rental income\n    16000.0/12 AS monthly_service_charge,  -- apartment service charges\n    36        AS months_to_project,        -- 3-year horizon\n    date(\n      (SELECT MAX(expensed_date) FROM expense_report WHERE account = 'BankAccount'),\n      'start of month'\n    ) AS start_month\n),\nseries(n, month_start) AS (\n  SELECT 0, (SELECT start_month FROM params)\n  UNION ALL\n  SELECT n + 1, date(month_start, '+1 month')\n  FROM series, params\n  WHERE n < params.months_to_project\n)\nSELECT\n  strftime('%Y-%m-01T00:00:00Z', month_start) AS time,\n  n AS month_no,\n\n  -- Loan payoff track (regular installment only)\n  ROUND(MAX((SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n, 0), 2) AS loan_remaining,\n\n  -- Savings pot growing from parallel saving\n  ROUND((SELECT start_savings_pot FROM params) + (SELECT monthly_parallel_saving FROM params) * n, 2) AS savings_pot,\n\n  -- Rental income net of service charge, cumulative (shows subsidy building up)\n  ROUND((SELECT monthly_rental_income FROM params) * n - (SELECT monthly_service_charge FROM params) * n, 2) AS cumulative_rental_net,\n\n  -- Can you lump-sum payoff the loan using your savings pot at this point?\n  CASE\n    WHEN ((SELECT start_savings_pot FROM params) + (SELECT monthly_parallel_saving FROM params) * n)\n         >= MAX((SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n, 0)\n    THEN 1 ELSE 0\n  END AS ready_to_payoff_lumpsum,\n\n  -- Is loan naturally paid off via regular installment alone?\n  CASE WHEN (SELECT start_loan_remaining FROM params) - (SELECT monthly_installment FROM params) * n <= 0\n    THEN 1 ELSE 0\n  END AS loan_naturally_paid_off\n\nFROM series\nORDER BY month_start;",
+          "refId": "A",
+          "timeColumns": [
+            "time",
+            "ts"
+          ]
+        }
+      ],
+      "title": "Monthly Cumulative savings",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "frser-sqlite-datasource",
+        "uid": "eegt2oll384jkd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 24
       },
       "id": 14,
       "options": {
@@ -265,8 +387,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -281,7 +402,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 36
       },
       "id": 10,
       "options": {
@@ -365,8 +486,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -381,7 +501,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 48
       },
       "id": 11,
       "options": {
@@ -465,8 +585,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -481,7 +600,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 60
       },
       "id": 12,
       "options": {
@@ -553,8 +672,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -570,7 +688,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 72
       },
       "id": 9,
       "options": {
@@ -652,8 +770,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -669,7 +786,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 80
       },
       "id": 8,
       "options": {
@@ -755,7 +872,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "2026-01-01",
           "value": "2026-01-01"
         },
@@ -886,6 +1003,6 @@
   "timezone": "browser",
   "title": "Expense Reporter Compare Yearly",
   "uid": "de6eipn53d4y",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }
